@@ -1,0 +1,51 @@
+---
+# Python 3 with PostgreSQL
+version: "3"
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    hostname: memfault
+    container_name: firmware-service
+    volumes:
+      - ..:/app
+    command: sleep infinity
+    environment:
+      FLASK_APP: service:app
+      FLASK_ENV: development
+      GUNICORN_BIND: "0.0.0.0:8000"
+      DATABASE_URI: postgresql://postgres:postgres@postgres:5432/postgres
+    networks:
+      - dev
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:alpine
+    # ports:
+    #   - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - dev
+
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379
+    volumes:
+      - redis_data:/data
+    networks:
+      - dev
+
+volumes:
+  postgres:
+  redis_data:
+
+
+networks:
+  dev:

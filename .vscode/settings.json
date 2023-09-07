@@ -1,0 +1,34 @@
+{
+    "markdown-preview-github-styles.colorTheme": "light",
+    "makefile.extensionOutputFolder": "./.vscode",
+    "git.mergeEditor": true,
+    "python.pythonPath": "/usr/local/bin/python",
+    "python.linting.enabled": false,
+    "python.linting.pylintEnabled": true,
+    "python.testing.nosetestsEnabled": true,
+    "python.testing.nosetestArgs": ["-c=setup.cfg"],
+    "python.testing.pytestEnabled": false,
+    "python.testing.unittestEnabled": true,
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./tests",
+        "-p",
+        "test*.py"
+    ],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/*.pyc": true,
+        "**/__pycache__": true
+    },
+    "cSpell.words": [
+        "healthcheck",
+        "reqparse",
+        "WEBBOT",
+        "WEBBOTS"
+    ]
+}
