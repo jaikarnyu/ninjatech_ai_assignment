@@ -1,6 +1,12 @@
 """
 Users Service
 
+GET /api/users - Returns a list all of the users
+GET /api/users/{id} - Returns the user with a given id number
+POST /api/users - creates a new user record in the database
+PUT /api/users/{id} - updates a user record in the database
+DELETE /api/users/{id} - deletes a user record in the database
+
 """
 from flask import jsonify, request, abort
 from service.common import status  # HTTP Status Codes

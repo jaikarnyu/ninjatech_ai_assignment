@@ -1,6 +1,12 @@
 """
 Notifications Service
 
+GET /api/notifications - Returns a list all of the notifications
+GET /api/notifications/{id} - Returns the notification with a given id number
+POST /api/notifications - creates a new notification record in the database
+PUT /api/notifications/{id} - updates a notification record in the database
+DELETE /api/notifications/{id} - deletes a notification record in the database
+
 """
 from flask import jsonify, request, abort
 from service.common import status  # HTTP Status Codes

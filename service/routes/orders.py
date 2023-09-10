@@ -1,6 +1,12 @@
 """
 Orders Service
 
+GET /api/orders - Returns a list all of the orders
+GET /api/orders/{id} - Returns the order with a given id number
+POST /api/orders - creates a new order record in the database
+PUT /api/orders/{id} - updates a order record in the database
+DELETE /api/orders/{id} - deletes a order record in the database
+
 """
 from flask import jsonify, request, abort
 from service.common import status  # HTTP Status Codes
