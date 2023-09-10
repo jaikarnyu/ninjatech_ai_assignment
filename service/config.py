@@ -4,6 +4,8 @@ Global Configuration for Application
 import os
 import json
 import logging
+from kombu.utils.url import safequote
+
 
 # Get environment
 env = os.getenv("ENV", "dev")
@@ -21,8 +23,18 @@ SECRET_KEY = os.getenv("SECRET_KEY", "sup3r-s3cr3t")
 LOGGING_LEVEL = logging.INFO
 
 
-CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://redis:6379")
+# AWS Credentials
+AWS_ACCESS_KEY = os.getenv("aws_access_key_id", "AKIAUXHD6LSDRNOOLW7Z")
+AWS_SECRET_KEY = os.getenv(
+    "aws_secret_access_key", "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"
+)
 
+aws_access_key = safequote(AWS_ACCESS_KEY)
+aws_secret_key = safequote(AWS_SECRET_KEY)
+
+CELERY_BROKER_URL = os.getenv(
+    "CELERY_BROKER_URL", f"sqs://{aws_access_key}:{aws_secret_key}@"
+)
 
 CELERY_CONFIG = {
     "broker_url": CELERY_BROKER_URL,
