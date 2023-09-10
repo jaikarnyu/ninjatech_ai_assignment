@@ -21,24 +21,26 @@ def send_notification(
         )
 
         # Check if notification already exists in database
-        notification = (
+        notification_obj = (
             Notifications.query.filter_by(
                 user_id=user_id, notification=notification, created_date=timestamp
             )
             .order_by(Notifications.created_date.desc())
             .first()
         )
-        if notification:
+        if notification_obj:
             app.logger.info("Notification already exists in database")
             return True
 
         # Create notification
-        notification = Notifications(
-            user_id=user_id,
-            notification_type=notification_type,
-            notification=notification,
-            created_date=timestamp,
-        )
+        notification_data = {
+            "user_id" : user_id,
+            "notification_type" : notification_type,
+            "notification" : notification,
+            "created_date" : timestamp
+        }
+        notification = Notifications()
+        notification.deserialize(notification_data)
         notification.create()
         app.logger.info("Saved notification events to database")
 
@@ -62,7 +64,7 @@ def send_notification(
             notification.update()
         return True
     except Exception as e:
-        app.logger.error("Error saving firmware events to database: %s" % e)
+        app.logger.error("Error saving notification events to database: %s" % e)
         app.logger.error(traceback.format_exc())
         # If the task failed after 3 retries, send a message to the dead letter queue
         if self.request.retries == 3:

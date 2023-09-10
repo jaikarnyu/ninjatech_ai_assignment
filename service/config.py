@@ -44,5 +44,5 @@ CELERY_CONFIG = {
 }
 
 CELERY_NOTIFICATIONS_QUEUE = os.getenv(
-    "CELERY_NOTIFICATIONS_QUEUE", "notifications-queue"
+    "CELERY_NOTIFICATIONS_QUEUE", "notifications"
 )
