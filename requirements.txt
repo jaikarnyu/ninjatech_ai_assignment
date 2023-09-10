@@ -30,3 +30,4 @@ flask-restx==1.0.6
 Flask-Migrate==4.0.4
 celery==5.2.7
 redis==4.6.0
+celery[sqs]
