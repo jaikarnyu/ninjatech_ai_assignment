@@ -59,38 +59,41 @@ http://localhost:8080
 You can now try out the APIs and explore the service.
 
 
-## Firmware Events API
+## Users API
 
-This section describes the API endpoints related to firmware events.
+This section describes the API endpoints related to Users.
 
----
 
-#### POST /firmware
+### Endpoints
 
-- **Description**: Creates a new firmware update event and adds it to task queue. Celery worker receives the message from the queue and persists the record to database
-- **Request Parameters**:
-  - Body: {"version" : "1.0.0", "timestamp" : 123456677}
-  - version should follow semantic versioning & timestamp should be in epoch
-  - Headers - X-Device-Api-Key (Device API key)
-- **Status Codes**:
-  - 202: Update Accepted
-  - 400: Bad request, validation error.
-  - 401: Unauthorized request or bad api key
-  - 404: Device not found 
-  - 500: Internal server error.
+GET /api/users - Returns a list all of the users
+GET /api/users/{id} - Returns the user with a given id number
+POST /api/users - creates a new user record in the database
+PUT /api/users/{id} - updates a user record in the database
+DELETE /api/users/{id} - deletes a user record in the database
 
-#### GET /firmware
+GET /api/orders - Returns a list all of the orders
+GET /api/orders/{id} - Returns the order with a given id number
+POST /api/orders - creates a new order record in the database
+PUT /api/orders/{id} - updates a order record in the database
+DELETE /api/orders/{id} - deletes a order record in the database
 
-- **Description**: Lists all the firmware events for a device.
-- **Request Parameters**: 
-  - path parameter : device_id
-  - headers : X-Project-Membership-Api-Key (Membership api key)
-- **Response**: A JSON array of firmware event objects.
+
+GET /api/notifications - Returns a list all of the notifications
+GET /api/notifications/{id} - Returns the notification with a given id number
+POST /api/notifications - creates a new notification record in the database
+PUT /api/notifications/{id} - updates a notification record in the database
+DELETE /api/notifications/{id} - deletes a notification record in the database
+
+
+
 - **Status Codes**:
   - 200: Successfully retrieved.
+  - 201: Resource created
+  - 204: Delete request success
   - 400: Bad request, validation error.
   - 401: Unauthorized request or bad api key.
-  - 404: Device/member not found.
+  - 404: Resource not found.
   - 500: Internal server error.
 
 
