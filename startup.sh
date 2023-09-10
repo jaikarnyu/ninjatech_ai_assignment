@@ -15,7 +15,7 @@ fi
 
 # Start the celery worker for context queue if service type is 'context' or 'all'
 if [ "$SERVICE_TYPE" = "notification" ] || [ "$SERVICE_TYPE" = "all" ]; then
-    celery -A service.celery worker --queues notification --loglevel=warning --concurrency $WORKER_CONCURRENCY &
+    celery -A service.celery worker --queues notifications --loglevel=warning --concurrency $WORKER_CONCURRENCY &
 fi
 
 
