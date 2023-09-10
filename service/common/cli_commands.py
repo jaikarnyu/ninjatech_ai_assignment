@@ -2,7 +2,7 @@
 Flask CLI Command Extensions
 """
 from service import app
-from service.models.projects import db
+from service.models.users import db
 
 
 ######################################################################

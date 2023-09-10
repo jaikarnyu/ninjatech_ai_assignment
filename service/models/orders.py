@@ -1,11 +1,11 @@
 """
-Model for ProjectMemberships
+Model for Orders
 """
 import logging
 from enum import Enum
-from datetime import datetime
+from datetime import date, datetime
 from flask import Flask
-from service.models.projects import db, DataValidationError
+from service.models.users import db, DataValidationError
 
 
 logger = logging.getLogger("flask.app")
@@ -13,11 +13,15 @@ logger = logging.getLogger("flask.app")
 
 def init_db(app):
     """Initialize the SQLAlchemy app"""
-    ProjectMemberships.init_db(app)
+    Orders.init_db(app)
 
 
-class ProjectMembershipStatus(Enum):
-    """Enumeration of valid ProjectMembership statuses"""
+class DataValidationError(Exception):
+    """Used for an data validation errors when deserializing"""
+
+
+class OrderStatus(Enum):
+    """Enumeration of valid Order statuses"""
 
     CREATION_REQUEST_RECEIVED = "CREATION_REQUEST_RECEIVED"
     IN_PROGRESS = "IN_PROGRESS"
@@ -25,9 +29,9 @@ class ProjectMembershipStatus(Enum):
     FAILED = "FAILED"
 
 
-class ProjectMemberships(db.Model):
+class Orders(db.Model):
     """
-    Class that represents a ProjectMembership
+    Class that represents a Order
 
     This version uses a relational database for persistence which is hidden
     from us by SQLAlchemy's object relational mappings (ORM)
@@ -36,19 +40,20 @@ class ProjectMemberships(db.Model):
     ##################################################
     # Table Schema
     ##################################################
-    __tablename__ = "project_memberships"
+    __tablename__ = "orders"
     id = db.Column(db.Integer, primary_key=True)
-    project_id = db.Column(
-        db.Integer, db.ForeignKey("projects.id", ondelete="CASCADE"), index=True
+    name = db.Column(db.String(), nullable=False)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
-    email = db.Column(db.String(), nullable=False, index=True)
+    send_notification = db.Column(db.Boolean, nullable=False, default=True)
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     modified_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
     active = db.Column(db.Boolean, nullable=False, default=True)
     status = db.Column(
         db.String(),
         nullable=False,
-        default=ProjectMembershipStatus.CREATION_REQUEST_RECEIVED.value,
+        default=OrderStatus.CREATION_REQUEST_RECEIVED.value,
     )
 
     ##################################################
@@ -56,15 +61,15 @@ class ProjectMemberships(db.Model):
     ##################################################
 
     def __repr__(self):
-        return f"<ProjectMembership {self.email} id=[{self.id}]>"
+        return f"<Order {self.name} id=[{self.id}]>"
 
     def create(self):
         """
-        Creates a ProjectMembership to the database
+        Creates a Order to the database
         """
-        logger.info("Creating %s", self.email)
+        logger.info("Creating %s", self.name)
         # id must be none to generate next primary key
-        self.id = None
+        self.id = None  # pylint: disable=invalid-name
         self.created_date = datetime.utcnow()
         self.modified_date = datetime.utcnow()
         db.session.add(self)
@@ -72,55 +77,58 @@ class ProjectMemberships(db.Model):
 
     def update(self):
         """
-        Updates a ProjectMembership to the database
+        Updates a Order to the database
         """
-        logger.info("Saving %s", self.email)
+        logger.info("Saving %s", self.name)
         if not self.id:
             raise DataValidationError("Update called with empty ID field")
         self.modified_date = datetime.utcnow()
         db.session.commit()
 
     def delete(self):
-        """Removes a ProjectMembership from the data store"""
-        logger.info(
-            f"Deleting {self.email} membership for project_id : {self.project_id}"
-        )
+        """Removes a Order from the data store"""
+        logger.info("Deleting %s", self.name)
         self.active = False
         self.modified_date = datetime.utcnow()
         db.session.commit()
 
     def serialize(self):
-        """Serializes a ProjectMembership into a dictionary"""
+        """Serializes a Order into a dictionary"""
         return {
             "id": self.id,
-            "email": self.email,
+            "name": self.name,
+            "user_id": self.user_id,
             "created_date": self.created_date.isoformat(),
             "modified_date": self.modified_date.isoformat(),
             "active": self.active,
             "status": self.status,
+            "send_notification": self.send_notification,
         }
 
     def deserialize(self, data: dict):
         """
-        Deserializes a ProjectMembership from a dictionary
+        Deserializes a Order from a dictionary
         Args:
-            data (dict): A dictionary containing the ProjectMembership data
+            data (dict): A dictionary containing the Order data
         """
         try:
-            self.email = data["email"]
+            self.name = data["name"]
+            self.user_id = data["user_id"]
             self.status = data.get(
-                "status", ProjectMembershipStatus.CREATION_REQUEST_RECEIVED.value
+                "status", OrderStatus.CREATION_REQUEST_RECEIVED.value
             )
+            self.send_notification = data.get("send_notification", True)
+            self.created_date = data.get("created_date", datetime.utcnow())
+            self.modified_date = data.get("modified_date", datetime.utcnow())
         except AttributeError as error:
             raise DataValidationError("Invalid attribute: " + error.args[0]) from error
         except KeyError as error:
             raise DataValidationError(
-                "Invalid ProjectMembership: missing " + error.args[0]
+                "Invalid Order: missing " + error.args[0]
             ) from error
         except TypeError as error:
             raise DataValidationError(
-                "Invalid ProjectMembership: body of request contained bad or no data "
-                + str(error)
+                "Invalid Order: body of request contained bad or no data " + str(error)
             ) from error
         except ValueError as error:
             raise DataValidationError(
@@ -148,60 +156,60 @@ class ProjectMemberships(db.Model):
 
     @classmethod
     def all(cls) -> list:
-        """Returns all of the ProjectMemberships in the database"""
-        logger.info("Processing all ProjectMemberships")
+        """Returns all of the Orders in the database"""
+        logger.info("Processing all Orders")
         return cls.query.filter(cls.active == True)
 
     @classmethod
-    def find(cls, project_membership_id: int):
-        """Finds a ProjectMembership by it's ID
+    def find(cls, device_id: int):
+        """Finds a Order by it's ID
 
-        :param project_membership_id: the id of the ProjectMembership to find
-        :type project_membership_id: int
+        :param device_id: the id of the Order to find
+        :type device_id: int
 
-        :return: an instance with the project_membership_id, or None if not found
-        :rtype: ProjectMembership
-
-        """
-        logger.info("Processing lookup for id %s ...", project_membership_id)
-        return cls.query.get(project_membership_id)
-
-    @classmethod
-    def find_or_404(cls, project_membership_id: int):
-        """Find a ProjectMembership by it's id
-
-        :param project_membership_id: the id of the ProjectMembership to find
-        :type project_membership_id: int
-
-        :return: an instance with the project_membership_id, or 404_NOT_FOUND if not found
-        :rtype: ProjectMembership
+        :return: an instance with the device_id, or None if not found
+        :rtype: Order
 
         """
-        logger.info("Processing lookup or 404 for id %s ...", project_membership_id)
-        return cls.query.get_or_404(project_membership_id)
+        logger.info("Processing lookup for id %s ...", device_id)
+        return cls.query.get(device_id)
 
     @classmethod
-    def find_by_email(cls, email: str) -> list:
-        """Returns all ProjectMemberships with the given email
+    def find_or_404(cls, device_id: int):
+        """Find a Order by it's id
 
-        :param email: the email of the ProjectMemberships you want to match
-        :type email: str
+        :param device_id: the id of the Order to find
+        :type device_id: int
 
-        :return: a collection of ProjectMemberships with that email
+        :return: an instance with the device_id, or 404_NOT_FOUND if not found
+        :rtype: Order
+
+        """
+        logger.info("Processing lookup or 404 for id %s ...", device_id)
+        return cls.query.get_or_404(device_id)
+
+    @classmethod
+    def find_by_user_id(cls, user_id: int) -> list:
+        """Returns all Orders with the given user id
+
+        :param user_id : the user_id of the Orders you want to match
+        :type user_id: int
+
+        :return: a collection of Orders with that user_id
         :rtype: list
 
         """
-        logger.info("Processing email query for %s ...", email)
-        return cls.query.filter(cls.email == email and cls.active == True)
+        logger.info("Processing user_id query for %s ...", user_id)
+        return cls.query.filter(cls.user_id == user_id and cls.active is True)
 
     @classmethod
     def find_by_status(cls, status) -> list:
-        """Returns all ProjectMemberships by their status
+        """Returns all Orders by their status
 
-        :param status : ProjectMembershipStatus Enum
-        :type ProjectMembershipStatus: Enum
+        :param status : OrderStatus Enum
+        :type OrderStatus: Enum
 
-        :return: a collection of ProjectMemberships that are available
+        :return: a collection of Orders that are available
         :rtype: list
 
         """

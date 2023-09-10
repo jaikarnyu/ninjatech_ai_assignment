@@ -7,8 +7,8 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-    hostname: memfault
-    container_name: firmware-service
+    hostname: ninjatech
+    container_name: ninjatech
     volumes:
       - ..:/app
     command: sleep infinity

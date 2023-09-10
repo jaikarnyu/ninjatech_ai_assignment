@@ -30,3 +30,7 @@ CELERY_CONFIG = {
         "queue_name_prefix": f"celery-{env}-",
     },
 }
+
+CELERY_NOTIFICATIONS_QUEUE = os.getenv(
+    "CELERY_NOTIFICATIONS_QUEUE", "notifications-queue"
+)

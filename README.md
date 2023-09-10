@@ -12,13 +12,13 @@ Follow the steps below to run the service:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/jaikarnyu/memfault-assignment
+git clone https://github.com/jaikarnyu/ninjatech_ai_assignment.git
 ```
 
 ### 2. Navigate to the Repository
 
 ```bash
-cd memfault-assignment
+cd ninjatech_ai_assignment
 ```
 
 ### 3. Open the Project in Visual Studio Code
@@ -39,17 +39,8 @@ To run the tests, execute the following command:
 nosetests tests
 ```
 
-### 6. Load Sample Data
 
-To load sample data and get API keys and device ID, run the following script:
-
-```bash
-python service/scripts/load_sample_data.py
-```
-
-This will create and print device & member api-keys along with device_id on the console
-
-### 7. Start the Service
+### 6. Start the Service
 
 To start the service, run the startup script:
 
@@ -57,12 +48,12 @@ To start the service, run the startup script:
 sh startup.sh
 ```
 
-### 8. Try Out the APIs
+### 7. Try Out the APIs
 
 Open your web browser and navigate to:
 
 ```
-http://localhost:8000
+http://localhost:8080
 ```
 
 You can now try out the APIs and explore the service.
@@ -134,15 +125,4 @@ This section describes the API endpoints related to firmware events.
 
 1. **Add CI/CD Pipelines Using GitHub Actions**:
 - **Description**: Implement Continuous Integration (CI) and Continuous Deployment (CD) pipelines using GitHub Actions. This will automate the build, test, and deployment process, ensuring that the code is consistently validated and seamlessly delivered to the production environment.
-
-
-2. **Add Routes for CRUD Operations on Models**:
-   - **Description**: Implement routes to enable Create, Read, Update, and Delete (CRUD) operations on all models.
-
-3. **Add Tests for Models**:
-   - **Description**: Implement test cases to validate the functionality of the data models.
-   
-4. **Encrypt API Keys**:
-   - **Description**: Implement encryption using a private key for API keys to enhance security.
-
 

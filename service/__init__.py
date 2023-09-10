@@ -21,12 +21,9 @@ and SQL database
 import sys
 from flask import Flask, jsonify, request
 from service import config
-from service.models.projects import Projects, db
-from service.models.project_memberships import ProjectMemberships
-from service.models.project_membership_api_keys import ProjectMembershipApiKeys
-from service.models.devices import Devices
-from service.models.device_api_keys import DeviceApiKeys
-from service.models.device_firmware_events import DeviceFirmwareEvents
+from service.models.users import Users, db
+from service.models.orders import Orders
+from service.models.notifications import Notifications
 import logging
 import traceback
 from flask_migrate import Migrate
@@ -54,7 +51,9 @@ app.config["SQLALCHEMY_POOL_RECYCLE"] = 3600
 celery = make_celery(app)
 
 
-from service.routes import device_firmware_events
+from service.routes import users
+from service.routes import orders
+from service.routes import notifications
 from service.common import status
 from service.common import log_handlers
 from service.common.error_handlers import DataValidationError
@@ -67,18 +66,15 @@ app.logger.setLevel(logging.DEBUG)
 
 
 app.logger.info(70 * "*")
-app.logger.info("  M E M F A U L T  S E R V I C E  ".center(70, "*"))
+app.logger.info("  N I N J A T E C H  S E R V I C E  ".center(70, "*"))
 app.logger.info(70 * "*")
 
 
 try:
     db.init_app(app)
-    Projects.init_db(app)  # make our sqlalchemy tables
-    ProjectMemberships.init_db(app)  # make our sqlalchemy tables
-    ProjectMembershipApiKeys.init_db(app)  # make our sqlalchemy tables
-    Devices.init_db(app)  # make our sqlalchemy tables
-    DeviceApiKeys.init_db(app)  # make our sqlalchemy tables
-    DeviceFirmwareEvents.init_db(app)  # make our sqlalchemy tables
+    Users.init_db(app)
+    Orders.init_db(app)
+    Notifications.init_db(app)
 except Exception as error:  # pylint: disable=broad-except
     app.logger.critical("%s: Cannot continue", error)
     # gunicorn requires exit code 4 to stop spawning workers when they die
