@@ -3,9 +3,9 @@
 
 ## Overview
 
-Implemented a REST API and SQL schema for a multi-tenant system enabling customers to see what firmware updates have happened on a device.
+Implemented services for Users, Orders, and Notifications.
 
-## How to Run the Service
+## How to Run the Service Locally
 
 Follow the steps below to run the service:
 
