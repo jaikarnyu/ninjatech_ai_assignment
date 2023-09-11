@@ -37,7 +37,7 @@ Click on "Reopen in Container" in Visual Studio Code to launch the development e
 export aws_access_key_id=<AWS_ACCESS_KEY>
 ```
 ``` 
-export aws_secret_key_id=<AWS_SECRET_KEY>
+export aws_secret_access_key=<AWS_SECRET_KEY>
 ```
 
 Make sure to use these keys either in github actions script/ github secrets to enable CD Pipeline
