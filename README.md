@@ -67,30 +67,7 @@ Open your web browser and navigate to:
 http://localhost:8080
 ```
 
-You can now try out the APIs and explore the service.
-
-
-
-### Endpoints
-
-GET /api/users - Returns a list all of the users
-GET /api/users/{id} - Returns the user with a given id number
-POST /api/users - creates a new user record in the database
-PUT /api/users/{id} - updates a user record in the database
-DELETE /api/users/{id} - deletes a user record in the database
-
-GET /api/orders - Returns a list all of the orders
-GET /api/orders/{id} - Returns the order with a given id number
-POST /api/orders - creates a new order record in the database
-PUT /api/orders/{id} - updates a order record in the database
-DELETE /api/orders/{id} - deletes a order record in the database
-
-
-GET /api/notifications - Returns a list all of the notifications
-GET /api/notifications/{id} - Returns the notification with a given id number
-POST /api/notifications - creates a new notification record in the database
-PUT /api/notifications/{id} - updates a notification record in the database
-DELETE /api/notifications/{id} - deletes a notification record in the database
+You can now try out the APIs using Flask Restx UI and explore the service.
 
 
 
