@@ -3,7 +3,10 @@
 
 ## Overview
 
-Implemented services for Users, Orders, and Notifications.
+Implemented services for Users, Orders, and Notifications. 
+
+Design Document : https://docs.google.com/document/d/1y2Ry90P1daxQ-_KRqOc0NV8HGPBdqlYKpeg2-dNSMek/edit?usp=sharing
+
 
 ## How to Run the Service Locally
 
